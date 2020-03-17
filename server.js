@@ -2,9 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const path = require('path');
+const routes = require('./routes/api');
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+
 
 mongoose.connect('mongodb://localhost/blog_post', {
     useNewUrlParser: true,
@@ -16,20 +20,6 @@ mongoose.connection.on('connected', () => {
     console.log('Mongoose is connected!')
 });
 
-// Schema
-const Schema = mongoose.Schema;
-
-const BlogPostSchema = new Schema({
-    title: String,
-    body:String,
-    date:{
-        type: String,
-        default: Date.now()
-    }
-});
-
-// Model
-const BlogPost = mongoose.model('BlogPost', BlogPostSchema);
 
 // Save data to Mongodatabase
 const data = {
@@ -37,8 +27,8 @@ const data = {
     body: 'This is a simple blog to soldify softwared development using the MERN stack'
 };
 
-// instantiate the model with data
-const newBlogPost = new BlogPost(data)
+// // instantiate the model with data
+// const newBlogPost = new BlogPost(data)
 
 // newBlogPost.save((error) => {
 //     if (error) {
@@ -51,28 +41,7 @@ const newBlogPost = new BlogPost(data)
 
 // Http request logger
 app.use(morgan('tiny'));
-
-// Routes
-app.get('/api', (req, res) => {
-
-    BlogPost.find({})
-    .then((data)=>{
-        console.log('Data: ', data);
-        res.json(data);
-    })
-    .catch((error) => {
-        console.log('error: ', error.message)
-
-    });
-
-});
-
-app.get('/api/name', (req, res) => {
-    const data = {
-        username: 'Hajikhani',
-        age: 32
-    };
-    res.json(data);
-});
+app.use('/api', routes);
 
 app.listen(PORT, console.log(`Server is starting at ${PORT}`));
+
