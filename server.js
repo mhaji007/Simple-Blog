@@ -39,6 +39,10 @@ const data = {
 // });
 // .save()
 
+// Data parsing
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+
 // Http request logger
 app.use(morgan('tiny'));
 app.use('/api', routes);
